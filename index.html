@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦄 Kawaii Planner 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados y animaciones */
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            /* El cursor de unicornio se aplica a toda la página */
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🦄</text></svg>"), auto;
+        }
+        
+        /* Definimos las animaciones que usa Tailwind */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(-15%);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+            }
+            50% {
+                transform: translateY(0);
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            }
+        }
+        @keyframes pulse {
+            50% {
+                opacity: .5;
+            }
+        }
+        .animate-bounce {
+            animation: bounce 1.5s infinite;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-4">
+
+    <div class="fixed top-10 left-10 text-5xl animate-bounce z-0">🦄</div>
+    <div class="fixed top-20 right-20 text-4xl animate-pulse z-0">⭐</div>
+    <div class="fixed bottom-20 left-20 text-4xl animate-bounce z-0">🌈</div>
+    <div class="fixed bottom-10 right-10 text-5xl animate-pulse z-0">✨</div>
+    <div class="fixed top-1/2 left-10 text-3xl animate-bounce z-0" style="animation-delay: 0.7s;">🎀</div>
+    <div class="fixed top-1/3 right-10 text-3xl animate-pulse z-0" style="animation-delay: 0.4s;">🌟</div>
+    
+    <div id="app-container" class="max-w-7xl mx-auto relative z-10">
+        <header class="bg-white rounded-3xl shadow-xl p-6 mb-6 border-4 border-pink-300 relative overflow-hidden">
+            <div class="absolute top-0 left-0 text-8xl opacity-10">🦄</div>
+            <div class="absolute bottom-0 right-0 text-7xl opacity-10">💝</div>
+            <div class="flex flex-col sm:flex-row items-center justify-between relative z-10 gap-4">
+                <div>
+                    <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 flex items-center gap-3">
+                        Kawaii Planner
+                    </h1>
+                    <div class="flex items-center gap-3">
+                        <button id="prev-day-btn" class="bg-pink-200 text-pink-600 p-2 rounded-full hover:bg-pink-300 transition" aria-label="Día anterior">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <p id="current-date-display" class="text-purple-500 font-bold text-lg text-center">Cargando...</p>
+                        <button id="next-day-btn" class="bg-pink-200 text-pink-600 p-2 rounded-full hover:bg-pink-300 transition" aria-label="Día siguiente">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 items-center">
+                    <button id="export-btn" class="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white px-6 py-3 rounded-full font-bold hover:from-pink-500 hover:via-purple-500 hover:to-blue-500 flex items-center gap-2 shadow-xl transform hover:scale-105 transition">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                         Descargar
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 text-6xl opacity-10">🌟✨</div>
+                    <h2 class="text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2">Objetivos del Día <span class="text-2xl">🎯</span></h2>
+                    <textarea id="goals-textarea" class="w-full h-24 p-3 rounded-2xl border-2 border-cyan-200 focus:border-cyan-400 focus:outline-none bg-cyan-50 resize-none" placeholder="¿Qué quieres lograr hoy? ✨"></textarea>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-pink-200 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 text-6xl opacity-10">🌸</div>
+                    <h2 class="text-2xl font-bold text-pink-500 mb-4 flex items-center gap-2">To-Do List <span class="text-2xl">📝</span></h2>
+                    <div class="space-y-3 mb-4">
+                        <input type="text" id="task-input" class="w-full p-3 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none" placeholder="Nueva tarea... 💕">
+                        <div class="flex gap-2">
+                            <select id="priority-select" class="flex-1 p-2 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none text-sm">
+                                <option value="high">⭐ Alta</option>
+                                <option value="medium">💖 Media</option>
+                                <option value="normal" selected>☁️ Normal</option>
+                            </select>
+                            <button id="add-task-btn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg transform hover:scale-105 transition">✨</button>
+                        </div>
+                    </div>
+                    <div id="tasks-container" class="space-y-2 max-h-96 overflow-y-auto">
+                        </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-purple-200 relative overflow-hidden">
+                 <div class="absolute top-0 right-0 text-6xl opacity-10">🌈</div>
+                 <h2 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">Horario <span class="text-2xl">⏰</span></h2>
+                 <div class="space-y-3 mb-4">
+                    <div class="flex gap-2">
+                        <input type="time" id="event-start-time" class="w-28 p-2 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none text-sm">
+                        <input type="time" id="event-end-time" class="w-28 p-2 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none text-sm">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="event-text-input" class="flex-1 p-2 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none" placeholder="Evento... 🎉">
+                        <button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg transform hover:scale-105 transition">+</button>
+                    </div>
+                 </div>
+                 <div id="schedule-container" class="space-y-1 max-h-[600px] overflow-y-auto">
+                    </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200 relative overflow-hidden">
+                <div class="absolute top-0 left-0 text-6xl opacity-10">💙</div>
+                <h2 class="text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2">Notas <span class="text-2xl">📔</span></h2>
+                <textarea id="notes-textarea" class="w-full h-full min-h-[500px] p-4 rounded-2xl border-2 border-cyan-200 focus:border-cyan-400 focus:outline-none bg-cyan-50 resize-none" placeholder="Escribe tus pensamientos aquí... 🌟"></textarea>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- ESTADO DE LA APLICACIÓN ---
+        let currentDate = new Date();
+        let dailyData = {}; // Objeto para guardar datos de todos los días
+
+        // --- ELEMENTOS DEL DOM ---
+        const dateDisplay = document.getElementById('current-date-display');
+        const goalsTextarea = document.getElementById('goals-textarea');
+        const notesTextarea = document.getElementById('notes-textarea');
+        const taskInput = document.getElementById('task-input');
+        const prioritySelect = document.getElementById('priority-select');
+        const tasksContainer = document.getElementById('tasks-container');
+        const scheduleContainer = document.getElementById('schedule-container');
+        const eventStartTimeInput = document.getElementById('event-start-time');
+        const eventEndTimeInput = document.getElementById('event-end-time');
+        const eventTextInput = document.getElementById('event-text-input');
+
+        // --- FUNCIONES DE MANEJO DE DATOS ---
+
+        const formatDateKey = (date) => date.toISOString().split('T')[0];
+
+        const saveData = () => {
+            localStorage.setItem('kawaiiPlannerData', JSON.stringify(dailyData));
+        };
+
+        const loadData = () => {
+            const savedData = localStorage.getItem('kawaiiPlannerData');
+            if (savedData) {
+                dailyData = JSON.parse(savedData);
+            }
+        };
+
+        const getCurrentDayData = () => {
+            const key = formatDateKey(currentDate);
+            if (!dailyData[key]) {
+                dailyData[key] = { tasks: [], scheduleEvents: [], notes: '', goals: '' };
+            }
+            return dailyData[key];
+        };
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+
+        const addTask = () => {
+            const text = taskInput.value.trim();
+            if (text) {
+                const dayData = getCurrentDayData();
+                const newTask = {
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    priority: prioritySelect.value
+                };
+                dayData.tasks.push(newTask);
+                taskInput.value = '';
+                saveData();
+                renderApp();
+            }
+        };
+        
+        const toggleTask = (taskId) => {
+            const dayData = getCurrentDayData();
+            const task = dayData.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderApp();
+            }
+        };
+
+        const deleteTask = (taskId) => {
+            const dayData = getCurrentDayData();
+            dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
+            saveData();
+            renderApp();
+        };
+        
+        const addEvent = () => {
+            const startTime = eventStartTimeInput.value;
+            const endTime = eventEndTimeInput.value;
+            const text = eventTextInput.value.trim();
+
+            if (startTime && endTime && text) {
+                const dayData = getCurrentDayData();
+                const newEvent = { id: Date.now(), startTime, endTime, text };
+                dayData.scheduleEvents.push(newEvent);
+                dayData.scheduleEvents.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                
+                eventStartTimeInput.value = '';
+                eventEndTimeInput.value = '';
+                eventTextInput.value = '';
+                
+                saveData();
+                renderApp();
+            }
+        };
+
+        const deleteEvent = (eventId) => {
+            const dayData = getCurrentDayData();
+            dayData.scheduleEvents = dayData.scheduleEvents.filter(e => e.id !== eventId);
+            saveData();
+            renderApp();
+        };
+
+        const handleNavigation = (direction) => {
+            currentDate.setDate(currentDate.getDate() + direction);
+            renderApp();
+        };
+        
+        const exportData = () => {
+            const data = getCurrentDayData();
+            const dateStr = currentDate.toLocaleDateString('es-MX');
+            let content = `🦄 PLANIFICADOR KAWAII - ${dateStr}\n\n`;
+            content += `🎯 OBJETIVOS DEL DÍA:\n${data.goals || 'Sin objetivos registrados'}\n\n`;
+            content += `✅ TAREAS:\n`;
+            data.tasks.forEach(task => {
+                const status = task.completed ? '✓' : '○';
+                const priorityIcon = task.priority === 'high' ? '⭐' : task.priority === 'medium' ? '💖' : '☁️';
+                content += `${status} ${priorityIcon} ${task.text}\n`;
+            });
+            content += `\n📅 HORARIO:\n`;
+            data.scheduleEvents.forEach(event => {
+                content += `${event.startTime} - ${event.endTime}: ${event.text}\n`;
+            });
+            content += `\n📝 NOTAS:\n${data.notes || 'Sin notas'}`;
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `planificador-kawaii-${dateStr.replace(/\//g, '-')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        // --- FUNCIONES DE RENDERIZADO (DIBUJAR LA PANTALLA) ---
+
+        const getPriorityColorClasses = (priority) => {
+            if (priority === 'high') return 'bg-pink-100 border-pink-300';
+            if (priority === 'medium') return 'bg-purple-100 border-purple-300';
+            return 'bg-blue-100 border-blue-300';
+        };
+        
+        const renderTasks = () => {
+            const { tasks } = getCurrentDayData();
+            tasksContainer.innerHTML = ''; // Limpiar contenedor
+            tasks.forEach(task => {
+                const priorityClasses = getPriorityColorClasses(task.priority);
+                const completedClass = task.completed ? 'opacity-60' : '';
+                const lineThroughClass = task.completed ? 'line-through' : '';
+                const checkmark = task.completed ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : '';
+                
+                const taskElement = document.createElement('div');
+                taskElement.className = `p-3 rounded-2xl border-2 flex items-center gap-2 ${priorityClasses} ${completedClass}`;
+                taskElement.innerHTML = `
+                    <button onclick="toggleTask(${task.id})" class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${task.completed ? 'bg-pink-400 border-pink-400' : 'border-gray-400'}">
+                        ${checkmark}
+                    </button>
+                    <span class="flex-1 ${lineThroughClass}">${task.text}</span>
+                    <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                `;
+                tasksContainer.appendChild(taskElement);
+            });
+        };
+
+        const renderSchedule = () => {
+            const { scheduleEvents } = getCurrentDayData();
+            scheduleContainer.innerHTML = ''; // Limpiar
+            const hours = Array.from({ length: 16 }, (_, i) => i + 6);
+
+            hours.forEach(hour => {
+                const hourStr = `${hour.toString().padStart(2, '0')}:00`;
+                const eventsAtThisHour = scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour);
+                
+                const hourSlot = document.createElement('div');
+                hourSlot.className = 'flex gap-2';
+                
+                let eventsHTML = '';
+                eventsAtThisHour.forEach(event => {
+                    eventsHTML += `
+                        <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-3 rounded-xl flex items-center justify-between border-2 border-purple-200 mb-2 shadow-md">
+                            <div class="flex-1">
+                                <div class="text-xs text-purple-600 font-semibold mb-1">${event.startTime} - ${event.endTime}</div>
+                                <div class="text-sm font-medium">${event.text}</div>
+                            </div>
+                            <button onclick="deleteEvent(${event.id})" class="text-red-400 hover:text-red-600 ml-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    `;
+                });
+
+                hourSlot.innerHTML = `
+                    <div class="w-16 text-sm font-semibold text-gray-500 py-2">${hourStr}</div>
+                    <div class="flex-1 border-t-2 border-pink-100 py-2">${eventsHTML}</div>
+                `;
+                scheduleContainer.appendChild(hourSlot);
+            });
+        };
+        
+        const renderApp = () => {
+            const dayData = getCurrentDayData();
+            // Actualizar fecha en el header
+            dateDisplay.textContent = currentDate.toLocaleDateString('es-MX', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Llenar campos con los datos del día
+            goalsTextarea.value = dayData.goals;
+            notesTextarea.value = dayData.notes;
+
+            // Renderizar listas dinámicas
+            renderTasks();
+            renderSchedule();
+        };
+
+        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
+
+        // Asignar eventos a los botones y campos de entrada
+        document.getElementById('prev-day-btn').addEventListener('click', () => handleNavigation(-1));
+        document.getElementById('next-day-btn').addEventListener('click', () => handleNavigation(1));
+        document.getElementById('add-task-btn').addEventListener('click', addTask);
+        document.getElementById('add-event-btn').addEventListener('click', addEvent);
+        document.getElementById('export-btn').addEventListener('click', exportData);
+        
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+        
+        eventTextInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addEvent();
+        });
+        
+        // Guardar notas y objetivos mientras se escribe
+        goalsTextarea.addEventListener('input', (e) => {
+            getCurrentDayData().goals = e.target.value;
+            saveData();
+        });
+        notesTextarea.addEventListener('input', (e) => {
+            getCurrentDayData().notes = e.target.value;
+            saveData();
+        });
+
+        // Cargar los datos y renderizar la aplicación por primera vez
+        loadData();
+        renderApp();
+    </script>
+</body>
+</html>
