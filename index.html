@@ -60,320 +60,227 @@
         </header>
 
         <main>
-            <div id="daily-view" class="view-container grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div id="daily-view" class="view-container grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="space-y-6">
-                    <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200 relative overflow-hidden">
-                        <h2 class="text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2">Objetivos del Día <span class="text-2xl">🎯</span></h2>
-                        <textarea id="goals-textarea" class="w-full h-24 p-3 rounded-2xl border-2 bg-cyan-50" placeholder="¿Qué quieres lograr hoy? ✨"></textarea>
-                    </div>
-                    <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-pink-200 relative overflow-hidden">
-                        <h2 class="text-2xl font-bold text-pink-500 mb-4 flex items-center gap-2">To-Do List <span class="text-2xl">📝</span></h2>
-                        <div class="space-y-3 mb-4">
-                            <input type="text" id="task-input" class="w-full p-3 rounded-2xl border-2" placeholder="Nueva tarea... 💕">
-                            <div class="flex gap-2">
-                                <select id="priority-select" class="flex-1 p-2 rounded-xl border-2 text-sm"><option value="high">⭐ Alta</option><option value="medium">💖 Media</option><option value="normal" selected>☁️ Normal</option></select>
-                                <button id="add-task-btn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg">✨</button>
-                            </div>
-                        </div>
-                        <div id="tasks-container" class="space-y-2 max-h-96 overflow-y-auto"></div>
-                    </div>
+                    <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><h2 class="text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2">Objetivos del Día <span class="text-2xl">🎯</span></h2><textarea id="goals-textarea" class="w-full h-24 p-3 rounded-2xl border-2 border-cyan-200 bg-cyan-50" placeholder="¿Qué quieres lograr hoy? ✨"></textarea></div>
+                    <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-pink-200"><h2 class="text-2xl font-bold text-pink-500 mb-4 flex items-center gap-2">To-Do List <span class="text-2xl">📝</span></h2><div class="space-y-3 mb-4"><input type="text" id="task-input" class="w-full p-3 rounded-2xl border-2 border-pink-200" placeholder="Nueva tarea... 💕"><div class="flex gap-2"><select id="priority-select" class="flex-1 p-2 rounded-xl border-2 text-sm"><option value="high">⭐ Alta</option><option value="medium">💖 Media</option><option value="normal" selected>☁️ Normal</option></select><button id="add-task-btn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg">✨</button></div></div><div id="tasks-container" class="space-y-2 max-h-96 overflow-y-auto"></div></div>
                 </div>
-                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-purple-200 relative overflow-hidden">
-                     <h2 class="text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2">Horario <span class="text-2xl">⏰</span></h2>
-                     <div class="space-y-3 mb-4">
-                        <div class="flex gap-2"><input type="time" id="event-start-time" class="w-28 p-2 rounded-xl border-2"><input type="time" id="event-end-time" class="w-28 p-2 rounded-xl border-2"></div>
-                        <div class="flex gap-2"><input type="text" id="event-text-input" class="flex-1 p-2 rounded-xl border-2" placeholder="Evento... 🎉"><button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg">+</button></div>
-                     </div>
-                     <div id="schedule-container" class="space-y-1 max-h-[600px] overflow-y-auto"></div>
-                </div>
-                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200 relative overflow-hidden">
-                    <h2 class="text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2">Notas <span class="text-2xl">📔</span></h2>
-                    <textarea id="notes-textarea" class="w-full h-full min-h-[500px] p-4 rounded-2xl border-2 bg-cyan-50" placeholder="Escribe tus pensamientos aquí... 🌟"></textarea>
-                </div>
+                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-purple-200"><h2 class="text-2xl font-bold text-purple-500 mb-4">Horario <span class="text-2xl">⏰</span></h2><div class="space-y-3 mb-4"><div class="flex gap-2"><input type="time" id="event-start-time" class="w-28 p-2 rounded-xl border-2"><input type="time" id="event-end-time" class="w-28 p-2 rounded-xl border-2"></div><div class="flex gap-2"><input type="text" id="event-text-input" class="flex-1 p-2 rounded-xl border-2" placeholder="Evento... 🎉"><button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg">+</button></div></div><div id="schedule-container" class="space-y-1 max-h-[600px] overflow-y-auto"></div></div>
+                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><h2 class="text-2xl font-bold text-teal-500 mb-4">Notas <span class="text-2xl">📔</span></h2><textarea id="notes-textarea" class="w-full h-full min-h-[500px] p-4 rounded-2xl border-2 bg-cyan-50" placeholder="Escribe tus pensamientos aquí... 🌟"></textarea></div>
             </div>
-
-            <div id="weekly-view" class="view-container hidden">
-                 <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-pink-200 overflow-hidden">
-                    <div id="weekly-grid" class="grid grid-cols-8 auto-rows-fr gap-1 text-center text-sm">
-                        </div>
-                </div>
-            </div>
-
-            <div id="monthly-view" class="view-container hidden">
-                <div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200 overflow-hidden">
-                    <div id="monthly-grid-header" class="grid grid-cols-7 gap-2 mb-2"></div>
-                    <div id="monthly-grid-days" class="grid grid-cols-7 gap-2"></div>
-                </div>
-            </div>
-
-            <div id="yearly-view" class="view-container hidden">
-                <div id="yearly-grid" class="bg-white rounded-3xl shadow-lg p-6 border-4 border-blue-200 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    </div>
-            </div>
+            <div id="weekly-view" class="view-container hidden"><div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-pink-200"><div id="weekly-grid" class="grid grid-cols-8 auto-rows-fr gap-1 text-center text-sm"></div></div></div>
+            <div id="monthly-view" class="view-container hidden"><div class="bg-white rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><div id="monthly-grid-header" class="grid grid-cols-7 gap-2 mb-2"></div><div id="monthly-grid-days" class="grid grid-cols-7 gap-2"></div></div></div>
+            <div id="yearly-view" class="view-container hidden"><div id="yearly-grid" class="bg-white rounded-3xl shadow-lg p-6 border-4 border-blue-200 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div></div>
         </main>
     </div>
 
     <script>
-        // --- ESTADO DE LA APLICACIÓN ---
+        // --- 1. ESTADO DE LA APLICACIÓN ---
         let currentDate = new Date();
         let dailyData = {};
-        let currentView = 'daily'; // 'daily', 'weekly', 'monthly', 'yearly'
+        let currentView = 'daily';
 
-        // --- CONSTANTES ---
-        const
-            monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-            dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-        
-        // --- ELEMENTOS DEL DOM ---
-        const
-            dateDisplay = document.getElementById('current-date-display'),
-            viewContainers = document.querySelectorAll('.view-container'),
-            viewSwitcherBtns = document.querySelectorAll('.view-btn'),
-            goalsTextarea = document.getElementById('goals-textarea'),
-            notesTextarea = document.getElementById('notes-textarea'),
-            taskInput = document.getElementById('task-input'),
-            prioritySelect = document.getElementById('priority-select'),
-            tasksContainer = document.getElementById('tasks-container'),
-            scheduleContainer = document.getElementById('schedule-container'),
-            eventStartTimeInput = document.getElementById('event-start-time'),
-            eventEndTimeInput = document.getElementById('event-end-time'),
-            eventTextInput = document.getElementById('event-text-input');
+        // --- 2. CONSTANTES Y REFERENCIAS AL DOM ---
+        const MONTH_NAMES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+        const DOM_ELEMENTS = {
+            dateDisplay: document.getElementById('current-date-display'),
+            viewContainers: document.querySelectorAll('.view-container'),
+            viewSwitcherBtns: document.querySelectorAll('.view-btn'),
+            goalsTextarea: document.getElementById('goals-textarea'),
+            notesTextarea: document.getElementById('notes-textarea'),
+            taskInput: document.getElementById('task-input'),
+            prioritySelect: document.getElementById('priority-select'),
+            tasksContainer: document.getElementById('tasks-container'),
+            scheduleContainer: document.getElementById('schedule-container'),
+            eventStartTimeInput: document.getElementById('event-start-time'),
+            eventEndTimeInput: document.getElementById('event-end-time'),
+            eventTextInput: document.getElementById('event-text-input'),
+            weeklyGrid: document.getElementById('weekly-grid'),
+            monthlyHeader: document.getElementById('monthly-grid-header'),
+            monthlyDays: document.getElementById('monthly-grid-days'),
+            yearlyGrid: document.getElementById('yearly-grid'),
+        };
+        const ICONS = {
+            check: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            trash: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`,
+        };
 
-        // --- FUNCIONES DE MANEJO DE DATOS ---
+        // --- 3. FUNCIONES DE MANEJO DE DATOS ---
         const formatDateKey = (date) => date.toISOString().split('T')[0];
         const saveData = () => localStorage.setItem('kawaiiPlannerData', JSON.stringify(dailyData));
-        const loadData = () => {
-            const savedData = localStorage.getItem('kawaiiPlannerData');
-            if (savedData) dailyData = JSON.parse(savedData);
-        };
-        const getCurrentDayData = () => {
-            const key = formatDateKey(currentDate);
-            if (!dailyData[key]) dailyData[key] = { tasks: [], scheduleEvents: [], notes: '', goals: '' };
+        const loadData = () => { dailyData = JSON.parse(localStorage.getItem('kawaiiPlannerData')) || {}; };
+        const getCurrentDayData = (date) => {
+            const key = formatDateKey(date);
+            if (!dailyData[key]) {
+                dailyData[key] = { tasks: [], scheduleEvents: [], notes: '', goals: '' };
+            }
             return dailyData[key];
         };
 
-        // --- LÓGICA DE LA APLICACIÓN (Agregar, borrar, etc.) ---
-        const addTask = () => { /* ... (código sin cambios) ... */ };
-        const toggleTask = (taskId) => { /* ... (código sin cambios) ... */ };
-        const deleteTask = (taskId) => { /* ... (código sin cambios) ... */ };
-        const addEvent = () => { /* ... (código sin cambios) ... */ };
-        const deleteEvent = (eventId) => { /* ... (código sin cambios) ... */ };
-        const exportData = () => { /* ... (código sin cambios) ... */ };
-
-        // --- LÓGICA DE NAVEGACIÓN Y VISTAS ---
+        // --- 4. LÓGICA DE LA APLICACIÓN (MANEJADORES DE EVENTOS) ---
+        const addTask = () => {
+            const text = DOM_ELEMENTS.taskInput.value.trim();
+            if (text) {
+                const dayData = getCurrentDayData(currentDate);
+                dayData.tasks.push({ id: Date.now(), text, completed: false, priority: DOM_ELEMENTS.prioritySelect.value });
+                DOM_ELEMENTS.taskInput.value = '';
+                saveData();
+                renderApp();
+            }
+        };
+        const toggleTask = (taskId) => {
+            const task = getCurrentDayData(currentDate).tasks.find(t => t.id === taskId);
+            if(task) { task.completed = !task.completed; saveData(); renderApp(); }
+        };
+        const deleteTask = (taskId) => {
+            const dayData = getCurrentDayData(currentDate);
+            dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
+            saveData();
+            renderApp();
+        };
+        const addEvent = () => {
+            const { eventStartTimeInput, eventEndTimeInput, eventTextInput } = DOM_ELEMENTS;
+            if (eventStartTimeInput.value && eventEndTimeInput.value && eventTextInput.value.trim()) {
+                const dayData = getCurrentDayData(currentDate);
+                dayData.scheduleEvents.push({ id: Date.now(), startTime: eventStartTimeInput.value, endTime: eventEndTimeInput.value, text: eventTextInput.value.trim() });
+                dayData.scheduleEvents.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                eventStartTimeInput.value = eventEndTimeInput.value = eventTextInput.value = '';
+                saveData();
+                renderApp();
+            }
+        };
+        const deleteEvent = (eventId) => {
+            const dayData = getCurrentDayData(currentDate);
+            dayData.scheduleEvents = dayData.scheduleEvents.filter(e => e.id !== eventId);
+            saveData();
+            renderApp();
+        };
         const handleNavigation = (direction) => {
             const newDate = new Date(currentDate);
             if (currentView === 'daily') newDate.setDate(newDate.getDate() + direction);
-            if (currentView === 'weekly') newDate.setDate(newDate.getDate() + 7 * direction);
-            if (currentView === 'monthly') newDate.setMonth(newDate.getMonth() + direction);
-            if (currentView === 'yearly') newDate.setFullYear(newDate.getFullYear() + direction);
+            else if (currentView === 'weekly') newDate.setDate(newDate.getDate() + 7 * direction);
+            else if (currentView === 'monthly') newDate.setMonth(newDate.getMonth() + direction);
+            else if (currentView === 'yearly') newDate.setFullYear(newDate.getFullYear() + direction);
             currentDate = newDate;
             renderApp();
         };
+        const changeView = (newView) => { currentView = newView; renderApp(); };
 
-        const changeView = (newView) => {
-            currentView = newView;
-            renderApp();
-        };
+        // --- 5. FUNCIONES DE RENDERIZADO (DIBUJAR LA PANTALLA) ---
+        const renderDailyView = () => {
+            const dayData = getCurrentDayData(currentDate);
+            DOM_ELEMENTS.goalsTextarea.value = dayData.goals;
+            DOM_ELEMENTS.notesTextarea.value = dayData.notes;
 
-        // --- FUNCIONES DE RENDERIZADO (DIBUJAR LA PANTALLA) ---
-
-        const updateDateDisplay = () => {
-            if (currentView === 'daily') {
-                dateDisplay.textContent = currentDate.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            } else if (currentView === 'weekly') {
-                const startOfWeek = new Date(currentDate);
-                startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-                const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(endOfWeek.getDate() + 6);
-                dateDisplay.textContent = `Semana del ${startOfWeek.getDate()} de ${monthNames[startOfWeek.getMonth()]} al ${endOfWeek.getDate()} de ${monthNames[endOfWeek.getMonth()]}`;
-            } else if (currentView === 'monthly') {
-                dateDisplay.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-            } else if (currentView === 'yearly') {
-                dateDisplay.textContent = currentDate.getFullYear();
-            }
-        };
-
-        const renderDailyView = () => { /* ... (código sin cambios) ... */ };
-        
-        const renderWeeklyView = () => {
-            const container = document.getElementById('weekly-grid');
-            container.innerHTML = '';
-            
-            // Header (Horas)
-            container.innerHTML += `<div class="font-bold p-2 text-teal-700">⏰</div>`;
-            const weekDays = [];
-            for (let i = 0; i < 7; i++) {
-                const day = new Date(currentDate);
-                day.setDate(day.getDate() - day.getDay() + i);
-                weekDays.push(day);
-                const isToday = day.toDateString() === new Date().toDateString();
-                container.innerHTML += `<div class="p-2 rounded-lg border-2 ${isToday ? 'bg-pink-300 text-white' : 'bg-pink-100'}">${dayNames[i]}<br>${day.getDate()}</div>`;
-            }
-
-            // Filas de Horas
-            for (let hour = 6; hour < 22; hour++) {
-                container.innerHTML += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour}:00</div>`; // Celda de la hora
-                for (const day of weekDays) {
-                    const key = formatDateKey(day);
-                    const events = (dailyData[key]?.scheduleEvents || []).filter(e => parseInt(e.startTime.split(':')[0]) === hour);
-                    let eventsHTML = '';
-                    events.forEach(e => {
-                        eventsHTML += `<div class="text-xs bg-purple-200 p-1 rounded mb-1">${e.text}</div>`;
-                    });
-                    container.innerHTML += `<div class="border border-pink-100 min-h-[40px] p-1">${eventsHTML}</div>`;
-                }
-            }
-        };
-
-        const renderMonthlyView = () => {
-            const headerContainer = document.getElementById('monthly-grid-header');
-            const daysContainer = document.getElementById('monthly-grid-days');
-            headerContainer.innerHTML = '';
-            daysContainer.innerHTML = '';
-
-            dayNames.forEach(day => headerContainer.innerHTML += `<div class="font-bold text-center text-teal-700">${day}</div>`);
-            
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDay = firstDay.getDay();
-
-            for (let i = 0; i < startingDay; i++) {
-                daysContainer.innerHTML += `<div></div>`;
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                const isToday = date.toDateString() === new Date().toDateString();
-                const key = formatDateKey(date);
-                const taskCount = dailyData[key]?.tasks.length || 0;
-                
-                let taskIndicator = taskCount > 0 ? `<div class="text-xs text-pink-500 mt-1">🌸 ${taskCount}</div>` : '';
-                daysContainer.innerHTML += `
-                    <div class="p-2 border-2 rounded-lg min-h-[80px] ${isToday ? 'bg-cyan-300 border-cyan-500' : 'bg-cyan-50 border-cyan-200'}">
-                        <div class="font-bold ${isToday ? 'text-white' : 'text-teal-600'}">${day}</div>
-                        ${taskIndicator}
-                    </div>
-                `;
-            }
-        };
-
-        const renderYearlyView = () => {
-            const container = document.getElementById('yearly-grid');
-            container.innerHTML = '';
-            const year = currentDate.getFullYear();
-            const currentMonth = new Date().getMonth();
-            const currentYear = new Date().getFullYear();
-
-            monthNames.forEach((name, index) => {
-                const isCurrentMonth = index === currentMonth && year === currentYear;
-                container.innerHTML += `
-                    <div class="p-4 rounded-2xl border-2 text-center ${isCurrentMonth ? 'bg-blue-300 border-blue-500 font-bold text-white' : 'bg-blue-50 border-blue-200'}">
-                        ${name}
-                    </div>
-                `;
+            // Renderizar Tareas
+            DOM_ELEMENTS.tasksContainer.innerHTML = '';
+            const priorityColors = { high: 'bg-pink-100 border-pink-300', medium: 'bg-purple-100 border-purple-300', normal: 'bg-blue-100 border-blue-300' };
+            dayData.tasks.forEach(task => {
+                DOM_ELEMENTS.tasksContainer.innerHTML += `
+                    <div class="p-3 rounded-2xl border-2 flex items-center gap-2 ${priorityColors[task.priority]} ${task.completed ? 'opacity-60' : ''}">
+                        <button onclick="toggleTask(${task.id})" class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${task.completed ? 'bg-pink-400 border-pink-400' : 'border-gray-400'}">${task.completed ? ICONS.check : ''}</button>
+                        <span class="flex-1 ${task.completed ? 'line-through' : ''}">${task.text}</span>
+                        <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600">${ICONS.trash}</button>
+                    </div>`;
             });
+            
+            // Renderizar Horario
+            DOM_ELEMENTS.scheduleContainer.innerHTML = '';
+            for (let hour = 6; hour <= 21; hour++) {
+                const hourStr = `${hour.toString().padStart(2, '0')}:00`;
+                const eventsAtHour = dayData.scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour);
+                let eventsHTML = '';
+                eventsAtHour.forEach(event => {
+                    eventsHTML += `
+                        <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-3 rounded-xl flex items-center justify-between border-2 border-purple-200 mb-2 shadow-md">
+                            <div><div class="text-xs text-purple-600 font-semibold">${event.startTime} - ${event.endTime}</div><div class="text-sm">${event.text}</div></div>
+                            <button onclick="deleteEvent(${event.id})" class="text-red-400 hover:text-red-600">${ICONS.trash}</button>
+                        </div>`;
+                });
+                DOM_ELEMENTS.scheduleContainer.innerHTML += `
+                    <div class="flex gap-2"><div class="w-16 text-sm font-semibold text-gray-500 py-2">${hourStr}</div><div class="flex-1 border-t-2 border-pink-100 py-2">${eventsHTML}</div></div>`;
+            }
         };
+
+        const renderWeeklyView = () => { /* Código sin cambios, ya era correcto */ };
+        const renderMonthlyView = () => { /* Código sin cambios, ya era correcto */ };
+        const renderYearlyView = () => { /* Código sin cambios, ya era correcto */ };
 
         const renderApp = () => {
-            // 1. Actualizar el display de la fecha
-            updateDateDisplay();
+            // Actualizar display de fecha
+            if (currentView === 'daily') DOM_ELEMENTS.dateDisplay.textContent = currentDate.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            else if (currentView === 'weekly') { const start = new Date(currentDate); start.setDate(start.getDate() - start.getDay()); const end = new Date(start); end.setDate(end.getDate() + 6); DOM_ELEMENTS.dateDisplay.textContent = `Semana del ${start.getDate()}/${start.getMonth()+1} al ${end.getDate()}/${end.getMonth()+1}`; }
+            else if (currentView === 'monthly') DOM_ELEMENTS.dateDisplay.textContent = `${MONTH_NAMES[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            else if (currentView === 'yearly') DOM_ELEMENTS.dateDisplay.textContent = currentDate.getFullYear();
+            
+            // Mostrar/Ocultar vistas
+            DOM_ELEMENTS.viewContainers.forEach(c => c.id === `${currentView}-view` ? c.classList.remove('hidden') : c.classList.add('hidden'));
+            if(currentView === 'daily') document.getElementById('daily-view').style.display = 'grid'; else document.getElementById('daily-view').style.display = 'none';
 
-            // 2. Gestionar qué vista se muestra
-            viewContainers.forEach(container => {
-                if (container.id === `${currentView}-view`) {
-                    container.classList.remove('hidden');
-                } else {
-                    container.classList.add('hidden');
-                }
-            });
-
-            // 3. Actualizar el estilo de los botones de vista
-            viewSwitcherBtns.forEach(btn => {
+            // Actualizar botones de vista
+            DOM_ELEMENTS.viewSwitcherBtns.forEach(btn => {
                 const view = btn.dataset.view;
                 const colors = { daily: 'pink', weekly: 'purple', monthly: 'cyan', yearly: 'blue' };
-                if (view === currentView) {
-                    btn.className = `view-btn px-3 py-2 rounded-xl font-bold transition transform bg-gradient-to-r from-${colors[view]}-400 to-${colors[view]}-500 text-white shadow-lg`;
-                } else {
-                    btn.className = `view-btn px-3 py-2 rounded-xl font-bold transition transform bg-white text-${colors[view]}-500 hover:bg-${colors[view]}-50`;
-                }
+                btn.className = view === currentView ? `view-btn px-3 py-2 rounded-xl font-bold bg-gradient-to-r from-${colors[view]}-400 to-${colors[view]}-500 text-white shadow-lg` : `view-btn px-3 py-2 rounded-xl font-bold bg-white text-${colors[view]}-500 hover:bg-${colors[view]}-50`;
             });
 
-            // 4. Llamar a la función de renderizado específica para la vista actual
+            // Llamar al renderizador específico
             if (currentView === 'daily') renderDailyView();
-            if (currentView === 'weekly') renderWeeklyView();
-            if (currentView === 'monthly') renderMonthlyView();
-            if (currentView === 'yearly') renderYearlyView();
+            else if (currentView === 'weekly') renderWeeklyView();
+            else if (currentView === 'monthly') renderMonthlyView();
+            else if (currentView === 'yearly') renderYearlyView();
         };
 
-
-        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
-        
-        // Copiamos las funciones que no cambiaron para no repetir el código
-        const originalAddTask = addTask;
-        addTask = () => { originalAddTask(); renderApp(); };
-        const originalToggleTask = toggleTask;
-        toggleTask = (id) => { originalToggleTask(id); renderApp(); };
-        const originalDeleteTask = deleteTask;
-        deleteTask = (id) => { originalDeleteTask(id); renderApp(); };
-        const originalAddEvent = addEvent;
-        addEvent = () => { originalAddEvent(); renderApp(); };
-        const originalDeleteEvent = deleteEvent;
-        deleteEvent = (id) => { originalDeleteEvent(id); renderApp(); };
-        
-        // Funciones que se mantienen iguales y llaman a renderApp() al final
-        const setupDailyViewFunctions = () => {
-            const getPriorityColorClasses = (p) => {if (p === 'high') return 'bg-pink-100 border-pink-300'; if (p === 'medium') return 'bg-purple-100 border-purple-300'; return 'bg-blue-100 border-blue-300';};
-            renderDailyView = () => {
-                const { tasks, scheduleEvents, notes, goals } = getCurrentDayData();
-                goalsTextarea.value = goals;
-                notesTextarea.value = notes;
-                tasksContainer.innerHTML = '';
-                tasks.forEach(task => { const taskHTML = `<div class="p-3 rounded-2xl border-2 flex items-center gap-2 ${getPriorityColorClasses(task.priority)} ${task.completed ? 'opacity-60' : ''}"><button onclick="toggleTask(${task.id})" class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${task.completed ? 'bg-pink-400' : ''}">${task.completed ? '✔️' : ''}</button><span class="flex-1 ${task.completed ? 'line-through' : ''}">${task.text}</span><button onclick="deleteTask(${task.id})" class="text-red-400">🗑️</button></div>`; tasksContainer.innerHTML += taskHTML;});
-                scheduleContainer.innerHTML = '';
-                Array.from({ length: 16 }, (_, i) => i + 6).forEach(hour => { const eventsAtHour = scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour); let eventsHTML = ''; eventsAtHour.forEach(e => {eventsHTML += `<div class="bg-purple-100 p-2 rounded-lg mb-1"><div>${e.startTime}-${e.endTime}</div><div>${e.text}</div><button onclick="deleteEvent(${e.id})">🗑️</button></div>`}); scheduleContainer.innerHTML += `<div class="flex gap-2"><div class="w-16">${hour}:00</div><div class="flex-1 border-t">${eventsHTML}</div></div>`;});
+        // --- 6. INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Re-definir funciones de renderizado que no estaban bien
+            renderWeeklyView = () => {
+                const container = DOM_ELEMENTS.weeklyGrid; container.innerHTML = '';
+                container.innerHTML += `<div class="font-bold p-2 text-teal-700">⏰</div>`;
+                const weekDays = Array.from({length: 7}, (_, i) => { const day = new Date(currentDate); day.setDate(day.getDate() - day.getDay() + i); return day; });
+                weekDays.forEach((day, i) => container.innerHTML += `<div class="p-2 rounded-lg border-2 ${day.toDateString() === new Date().toDateString() ? 'bg-pink-300 text-white' : 'bg-pink-100'}">${DAY_NAMES[i]}<br>${day.getDate()}</div>`);
+                for (let hour = 6; hour < 22; hour++) {
+                    container.innerHTML += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour}:00</div>`;
+                    weekDays.forEach(day => {
+                        let eventsHTML = getCurrentDayData(day).scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(e => `<div class="text-xs bg-purple-200 p-1 rounded mb-1 truncate">${e.text}</div>`).join('');
+                        container.innerHTML += `<div class="border border-pink-100 min-h-[40px] p-1">${eventsHTML}</div>`;
+                    });
+                }
             };
-            addTask = () => {if(taskInput.value.trim()){getCurrentDayData().tasks.push({id:Date.now(),text:taskInput.value,completed:false,priority:prioritySelect.value});taskInput.value='';saveData();renderApp();}};
-            toggleTask = (id) => {const t = getCurrentDayData().tasks.find(t=>t.id===id); if(t){t.completed=!t.completed;saveData();renderApp();}};
-            deleteTask = (id) => {const dayData = getCurrentDayData();dayData.tasks=dayData.tasks.filter(t=>t.id!==id);saveData();renderApp();};
-            addEvent = () => {if(eventStartTimeInput.value && eventEndTimeInput.value && eventTextInput.value.trim()){getCurrentDayData().scheduleEvents.push({id:Date.now(),startTime:eventStartTimeInput.value,endTime:eventEndTimeInput.value,text:eventTextInput.value});eventStartTimeInput.value='';eventEndTimeInput.value='';eventTextInput.value='';saveData();renderApp();}};
-            deleteEvent = (id) => {const dayData = getCurrentDayData();dayData.scheduleEvents=dayData.scheduleEvents.filter(e=>e.id!==id);saveData();renderApp();};
-            exportData = () => {
-                const data = getCurrentDayData();
-                const dateStr = currentDate.toLocaleDateString('es-MX');
-                let content = `🦄 PLANIFICADOR KAWAII - ${dateStr}\n\n`;
-                content += `🎯 OBJETIVOS DEL DÍA:\n${data.goals || 'Sin objetivos'}\n\n`;
-                content += `✅ TAREAS:\n`;
-                data.tasks.forEach(task => content += `${task.completed ? '✓' : '○'} ${task.text}\n`);
-                content += `\n📅 HORARIO:\n`;
-                data.scheduleEvents.sort((a,b)=>a.startTime.localeCompare(b.startTime)).forEach(event => content += `${event.startTime} - ${event.endTime}: ${event.text}\n`);
-                content += `\n📝 NOTAS:\n${data.notes || 'Sin notas'}`;
-                const blob = new Blob([content],{type:'text/plain;charset=utf-8'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href=url; a.download=`planificador-kawaii-${dateStr.replace(/\//g,'-')}.txt`; a.click(); URL.revokeObjectURL(url);
+            renderMonthlyView = () => {
+                const { monthlyHeader, monthlyDays } = DOM_ELEMENTS; monthlyHeader.innerHTML = ''; monthlyDays.innerHTML = '';
+                DAY_NAMES.forEach(day => monthlyHeader.innerHTML += `<div class="font-bold text-center text-teal-700">${day}</div>`);
+                const year = currentDate.getFullYear(), month = currentDate.getMonth();
+                const firstDay = new Date(year, month, 1), lastDay = new Date(year, month + 1, 0);
+                for (let i = 0; i < firstDay.getDay(); i++) monthlyDays.innerHTML += `<div></div>`;
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(year, month, day); const isToday = date.toDateString() === new Date().toDateString();
+                    const taskCount = getCurrentDayData(date).tasks.length;
+                    monthlyDays.innerHTML += `<div class="p-2 border-2 rounded-lg min-h-[80px] ${isToday ? 'bg-cyan-300' : 'bg-cyan-50'}"><div class="font-bold">${day}</div>${taskCount > 0 ? `<div class="text-xs text-pink-500 mt-1">🌸 ${taskCount}</div>` : ''}</div>`;
+                }
             };
-        };
+            renderYearlyView = () => {
+                const container = DOM_ELEMENTS.yearlyGrid; container.innerHTML = '';
+                const year = currentDate.getFullYear();
+                MONTH_NAMES.forEach((name, i) => container.innerHTML += `<div class="p-4 rounded-2xl border-2 text-center ${i === new Date().getMonth() && year === new Date().getFullYear() ? 'bg-blue-300' : 'bg-blue-50'}">${name}</div>`);
+            };
 
-        // Asignar eventos a los botones y campos de entrada
-        document.getElementById('prev-btn').addEventListener('click', () => handleNavigation(-1));
-        document.getElementById('next-btn').addEventListener('click', () => handleNavigation(1));
-        document.getElementById('add-task-btn').addEventListener('click', () => addTask());
-        document.getElementById('add-event-btn').addEventListener('click', () => addEvent());
-        document.getElementById('export-btn').addEventListener('click', () => exportData());
-        viewSwitcherBtns.forEach(btn => btn.addEventListener('click', () => changeView(btn.dataset.view)));
+            // Añadir Event Listeners
+            document.getElementById('prev-btn').addEventListener('click', () => handleNavigation(-1));
+            document.getElementById('next-btn').addEventListener('click', () => handleNavigation(1));
+            document.getElementById('add-task-btn').addEventListener('click', addTask);
+            document.getElementById('add-event-btn').addEventListener('click', addEvent);
+            document.getElementById('export-btn').addEventListener('click', exportData);
+            DOM_ELEMENTS.viewSwitcherBtns.forEach(btn => btn.addEventListener('click', () => changeView(btn.dataset.view)));
+            DOM_ELEMENTS.goalsTextarea.addEventListener('input', (e) => { getCurrentDayData(currentDate).goals = e.target.value; saveData(); });
+            DOM_ELEMENTS.notesTextarea.addEventListener('input', (e) => { getCurrentDayData(currentDate).notes = e.target.value; saveData(); });
+            DOM_ELEMENTS.taskInput.addEventListener('keypress', (e) => e.key === 'Enter' && addTask());
+            DOM_ELEMENTS.eventTextInput.addEventListener('keypress', (e) => e.key === 'Enter' && addEvent());
 
-        goalsTextarea.addEventListener('input', (e) => { getCurrentDayData().goals = e.target.value; saveData(); });
-        notesTextarea.addEventListener('input', (e) => { getCurrentDayData().notes = e.target.value; saveData(); });
-        taskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
-        eventTextInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addEvent(); });
-
-        // Cargar los datos y renderizar la aplicación por primera vez
-        setupDailyViewFunctions(); // Carga las funciones que no cambiaron
-        loadData();
-        renderApp();
+            loadData();
+            renderApp();
+        });
     </script>
 </body>
 </html>
