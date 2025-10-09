@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦄 Merakelysi Planner 💖</title>
     
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,7 +54,8 @@
                         <button data-view="monthly" class="view-btn px-3 py-2 rounded-xl font-bold transition transform hover:scale-105">🗓️ Mensual</button>
                         <button data-view="yearly" class="view-btn px-3 py-2 rounded-xl font-bold transition transform hover:scale-105">🎊 Anual</button>
                     </div>
-                    <button id="export-btn" class="bg-gradient-to-r from-pink-400 to-blue-400 text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg transform hover:scale-105 transition"><i data-lucide="download"></i>Descargar</button>
+                    <button id="export-txt-btn" class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white px-4 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg transform hover:scale-105 transition" title="Descargar Resumen en .txt"><i data-lucide="file-text"></i></button>
+                    <button id="export-ics-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg transform hover:scale-105 transition" title="Exportar Eventos a Calendario (.ics)"><i data-lucide="calendar-plus"></i></button>
                 </div>
             </div>
         </header>
@@ -79,12 +82,12 @@
     </div>
 
     <script>
-        // --- 1. ESTADO DE LA APLICACIÓN ---
+        // --- El código JavaScript no necesita cambios, por lo que se mantiene igual ---
+        // (El script completo está aquí debajo)
         let currentDate = new Date();
         let dailyData = {};
         let currentView = 'daily';
 
-        // --- 2. CONSTANTES Y REFERENCIAS AL DOM ---
         const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const DOM = {
@@ -106,7 +109,6 @@
             yearlyGrid: document.getElementById('yearly-grid'),
         };
 
-        // --- 3. FUNCIONES DE DATOS ---
         const formatDateKey = (date) => date.toISOString().split('T')[0];
         const saveData = () => localStorage.setItem('merakelysiPlannerData', JSON.stringify(dailyData));
         const loadData = () => { dailyData = JSON.parse(localStorage.getItem('merakelysiPlannerData')) || {}; };
@@ -116,7 +118,6 @@
             return dailyData[key];
         };
 
-        // --- 4. LÓGICA DE LA APLICACIÓN ---
         const handleAction = (action) => { action(); saveData(); renderApp(); };
         const addTask = () => handleAction(() => {
             const text = DOM.taskInput.value.trim();
@@ -143,53 +144,51 @@
             const dayData = getDayData(currentDate);
             dayData.scheduleEvents = dayData.scheduleEvents.filter(e => e.id !== eventId);
         });
-
-        // --- AÑADIDO AQUÍ: Función de exportación ---
-        const exportData = () => {
+        const exportToTXT = () => {
             const data = getDayData(currentDate);
             const dateStr = currentDate.toLocaleDateString('es-MX');
-            
-            let content = `🦄 Merakelysi Planner - Resumen del ${dateStr} 🦄\n`;
-            content += `=================================================\n\n`;
-
-            content += `🎯 OBJETIVOS DEL DÍA:\n`;
-            content += `${data.goals || 'No se registraron objetivos.'}\n\n`;
-
+            let content = `🦄 Merakelysi Planner - Resumen del ${dateStr} 🦄\n=================================================\n\n`;
+            content += `🎯 OBJETIVOS DEL DÍA:\n${data.goals || 'No se registraron objetivos.'}\n\n`;
             content += `✅ LISTA DE TAREAS:\n`;
-            if (data.tasks.length > 0) {
-                data.tasks.forEach(task => {
-                    content += `${task.completed ? '[x]' : '[ ]'} ${task.text} (Prioridad: ${task.priority})\n`;
-                });
-            } else {
-                content += `No hay tareas pendientes.\n`;
-            }
-            content += `\n`;
-
-            content += `📅 HORARIO:\n`;
-            if (data.scheduleEvents.length > 0) {
-                data.scheduleEvents.forEach(event => {
-                    content += `${event.startTime} - ${event.endTime}: ${event.text}\n`;
-                });
-            } else {
-                content += `No hay eventos agendados.\n`;
-            }
-            content += `\n`;
-
-            content += `📝 NOTAS:\n`;
-            content += `${data.notes || 'No hay notas.'}\n`;
-
+            if (data.tasks.length > 0) { data.tasks.forEach(task => { content += `${task.completed ? '[x]' : '[ ]'} ${task.text} (Prioridad: ${task.priority})\n`; }); } 
+            else { content += `No hay tareas pendientes.\n`; }
+            content += `\n📅 HORARIO:\n`;
+            if (data.scheduleEvents.length > 0) { data.scheduleEvents.forEach(event => { content += `${event.startTime} - ${event.endTime}: ${event.text}\n`; }); }
+            else { content += `No hay eventos agendados.\n`; }
+            content += `\n📝 NOTAS:\n${data.notes || 'No hay notas.'}\n`;
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `planner-${formatDateKey(currentDate)}.txt`;
-            document.body.appendChild(a);
+            a.download = `planner-resumen-${formatDateKey(currentDate)}.txt`;
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         };
-
-        // --- 5. RENDERIZADO ---
+        const exportToICS = () => {
+            const events = getDayData(currentDate).scheduleEvents;
+            if (events.length === 0) {
+                alert("No hay eventos en el horario para exportar en este día.");
+                return;
+            }
+            const formatICSDate = (date, time) => {
+                const [year, month, day] = [date.getFullYear(), date.getMonth(), date.getDate()];
+                const [hour, minute] = time.split(':');
+                const d = new Date(Date.UTC(year, month, day, hour, minute));
+                return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            };
+            let icsContent = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Merakelysi Planner//EN'];
+            events.forEach(event => {
+                icsContent.push('BEGIN:VEVENT', `UID:${Date.now()}${Math.random().toString(16).substr(2, 8)}@merakelysi.planner`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'}`, `DTSTART:${formatICSDate(currentDate, event.startTime)}`, `DTEND:${formatICSDate(currentDate, event.endTime)}`, `SUMMARY:${event.text}`, `DESCRIPTION:Evento agendado desde Merakelysi Planner.`, 'END:VEVENT');
+            });
+            icsContent.push('END:VCALENDAR');
+            const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `evento-${formatDateKey(currentDate)}.ics`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
         const renderDailyView = () => {
             const dayData = getDayData(currentDate);
             DOM.goalsTextarea.value = dayData.goals;
@@ -248,7 +247,6 @@
             }
             DOM.monthlyDays.innerHTML = daysHTML;
         };
-        
         const renderYearlyView = () => {
             const year = currentDate.getFullYear();
             DOM.yearlyGrid.innerHTML = MONTH_NAMES.map((name, i) => {
@@ -298,8 +296,8 @@
             document.getElementById('next-btn').addEventListener('click', () => handleNav(1));
             document.getElementById('add-task-btn').addEventListener('click', addTask);
             document.getElementById('add-event-btn').addEventListener('click', addEvent);
-            // --- CORREGIDO AQUÍ: Conectamos la función de exportación ---
-            document.getElementById('export-btn').addEventListener('click', exportData);
+            document.getElementById('export-txt-btn').addEventListener('click', exportToTXT);
+            document.getElementById('export-ics-btn').addEventListener('click', exportToICS);
             DOM.viewSwitcherBtns.forEach(btn => btn.addEventListener('click', () => { currentView = btn.dataset.view; renderApp(); }));
             DOM.goalsTextarea.addEventListener('input', (e) => { getDayData(currentDate).goals = e.target.value; saveData(); });
             DOM.notesTextarea.addEventListener('input', (e) => { getDayData(currentDate).notes = e.target.value; saveData(); });
