@@ -66,7 +66,21 @@
                     <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><h2 class="font-questrial text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2"><i data-lucide="target"></i>Objetivos del Día</h2><textarea id="goals-textarea" class="w-full h-24 p-3 rounded-2xl border-2 border-cyan-200 bg-cyan-50/50 focus:outline-cyan-400" placeholder="¿Qué quieres lograr hoy? ✨"></textarea></div>
                     <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-pink-200"><h2 class="font-questrial text-2xl font-bold text-pink-500 mb-4 flex items-center gap-2"><i data-lucide="check-square"></i>To-Do List</h2><div class="space-y-3 mb-4"><input type="text" id="task-input" class="w-full p-3 rounded-2xl border-2 border-pink-200 focus:outline-pink-400" placeholder="Nueva tarea... 💕"><div class="flex gap-2"><select id="priority-select" class="flex-1 p-2 rounded-xl border-2 border-pink-200"><option value="high">⭐ Alta</option><option value="medium">💖 Media</option><option value="normal" selected>☁️ Normal</option></select><button id="add-task-btn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-4 py-2 rounded-xl font-bold shadow-lg transform hover:scale-105 transition"><i data-lucide="plus"></i></button></div></div><div id="tasks-container" class="space-y-2 max-h-96 overflow-y-auto"></div></div>
                 </div>
-                <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-purple-200"><h2 class="font-questrial text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2"><i data-lucide="calendar"></i>Horario</h2><div class="space-y-3 mb-4"><div class="flex gap-2"><input type="time" id="event-start-time" class="w-full p-2 rounded-xl border-2 border-purple-200"><input type="time" id="event-end-time" class="w-full p-2 rounded-xl border-2 border-purple-200"></div><div class="flex gap-2"><input type="text" id="event-text-input" class="flex-1 p-2 rounded-xl border-2 border-purple-200" placeholder="Evento... 🎉"><button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg transform hover:scale-105 transition"><i data-lucide="plus"></i></button></div></div><div id="schedule-container" class="space-y-1 max-h-[600px] overflow-y-auto"></div></div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-purple-200">
+                    <h2 class="font-questrial text-2xl font-bold text-purple-500 mb-4 flex items-center gap-2"><i data-lucide="calendar"></i>Horario</h2>
+                    <div class="space-y-3 mb-4">
+                        <div class="flex gap-2">
+                            <input type="time" id="event-start-time" class="w-full p-2 rounded-xl border-2 border-purple-200">
+                            <input type="time" id="event-end-time" class="w-full p-2 rounded-xl border-2 border-purple-200">
+                        </div>
+                        <p class="text-xs text-purple-400 text-center -mt-2">Formato 24 horas (ej. 19:00)</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="event-text-input" class="flex-1 p-2 rounded-xl border-2 border-purple-200" placeholder="Evento... 🎉">
+                            <button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg transform hover:scale-105 transition"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                    <div id="schedule-container" class="space-y-1 max-h-[600px] overflow-y-auto"></div>
+                </div>
                 <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><h2 class="font-questrial text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2"><i data-lucide="notebook-pen"></i>Notas</h2><textarea id="notes-textarea" class="w-full h-full min-h-[500px] p-4 rounded-2xl border-2 border-cyan-200 bg-cyan-50/50 focus:outline-cyan-400" placeholder="Escribe tus pensamientos aquí... 🌟"></textarea></div>
             </div>
             <div id="weekly-view" class="view-container hidden"><div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-pink-200"><div id="weekly-grid" class="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr_1fr] auto-rows-fr gap-1 text-center text-sm"></div></div></div>
@@ -82,12 +96,11 @@
     </div>
 
     <script>
-        // --- 1. ESTADO DE LA APLICACIÓN ---
+        // --- El código JavaScript no necesita cambios, por lo que se mantiene igual ---
         let currentDate = new Date();
         let dailyData = {};
         let currentView = 'daily';
 
-        // --- 2. CONSTANTES Y REFERENCIAS AL DOM ---
         const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const DOM = {
@@ -109,7 +122,6 @@
             yearlyGrid: document.getElementById('yearly-grid'),
         };
 
-        // --- 3. FUNCIONES DE DATOS ---
         const formatDateKey = (date) => date.toISOString().split('T')[0];
         const saveData = () => localStorage.setItem('merakelysiPlannerData', JSON.stringify(dailyData));
         const loadData = () => { dailyData = JSON.parse(localStorage.getItem('merakelysiPlannerData')) || {}; };
@@ -119,7 +131,6 @@
             return dailyData[key];
         };
 
-        // --- 4. LÓGICA DE LA APLICACIÓN ---
         const handleAction = (action) => { action(); saveData(); renderApp(); };
         const addTask = () => handleAction(() => {
             const text = DOM.taskInput.value.trim();
@@ -191,8 +202,6 @@
             a.click();
             URL.revokeObjectURL(url);
         };
-
-        // --- 5. RENDERIZADO ---
         const renderDailyView = () => {
             const dayData = getDayData(currentDate);
             DOM.goalsTextarea.value = dayData.goals;
@@ -205,7 +214,6 @@
                     <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>`;
             }).join('');
-            // --- CAMBIO AQUÍ: Horario de 00 a 23 horas ---
             DOM.scheduleContainer.innerHTML = Array.from({ length: 24 }, (_, i) => i).map(hour => {
                 const eventsHTML = dayData.scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(event => `
                     <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-3 rounded-xl flex items-center justify-between border-2 border-purple-200 mb-2 shadow-md">
