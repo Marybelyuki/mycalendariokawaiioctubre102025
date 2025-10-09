@@ -7,7 +7,7 @@
     
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -82,12 +82,12 @@
     </div>
 
     <script>
-        // --- El código JavaScript no necesita cambios, por lo que se mantiene igual ---
-        // (El script completo está aquí debajo)
+        // --- 1. ESTADO DE LA APLICACIÓN ---
         let currentDate = new Date();
         let dailyData = {};
         let currentView = 'daily';
 
+        // --- 2. CONSTANTES Y REFERENCIAS AL DOM ---
         const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const DOM = {
@@ -109,6 +109,7 @@
             yearlyGrid: document.getElementById('yearly-grid'),
         };
 
+        // --- 3. FUNCIONES DE DATOS ---
         const formatDateKey = (date) => date.toISOString().split('T')[0];
         const saveData = () => localStorage.setItem('merakelysiPlannerData', JSON.stringify(dailyData));
         const loadData = () => { dailyData = JSON.parse(localStorage.getItem('merakelysiPlannerData')) || {}; };
@@ -118,6 +119,7 @@
             return dailyData[key];
         };
 
+        // --- 4. LÓGICA DE LA APLICACIÓN ---
         const handleAction = (action) => { action(); saveData(); renderApp(); };
         const addTask = () => handleAction(() => {
             const text = DOM.taskInput.value.trim();
@@ -173,12 +175,12 @@
             const formatICSDate = (date, time) => {
                 const [year, month, day] = [date.getFullYear(), date.getMonth(), date.getDate()];
                 const [hour, minute] = time.split(':');
-                const d = new Date(Date.UTC(year, month, day, hour, minute));
-                return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                const localDate = new Date(year, month, day, hour, minute);
+                return localDate.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z';
             };
             let icsContent = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Merakelysi Planner//EN'];
             events.forEach(event => {
-                icsContent.push('BEGIN:VEVENT', `UID:${Date.now()}${Math.random().toString(16).substr(2, 8)}@merakelysi.planner`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'}`, `DTSTART:${formatICSDate(currentDate, event.startTime)}`, `DTEND:${formatICSDate(currentDate, event.endTime)}`, `SUMMARY:${event.text}`, `DESCRIPTION:Evento agendado desde Merakelysi Planner.`, 'END:VEVENT');
+                icsContent.push('BEGIN:VEVENT', `UID:${Date.now()}${Math.random().toString(16).substr(2, 8)}@merakelysi.planner`, `DTSTAMP:${new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'}`, `DTSTART:${formatICSDate(currentDate, event.startTime)}`, `DTEND:${formatICSDate(currentDate, event.endTime)}`, `SUMMARY:${event.text}`, `DESCRIPTION:Evento agendado desde Merakelysi Planner.`, 'END:VEVENT');
             });
             icsContent.push('END:VCALENDAR');
             const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
@@ -189,6 +191,8 @@
             a.click();
             URL.revokeObjectURL(url);
         };
+
+        // --- 5. RENDERIZADO ---
         const renderDailyView = () => {
             const dayData = getDayData(currentDate);
             DOM.goalsTextarea.value = dayData.goals;
@@ -201,7 +205,8 @@
                     <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>`;
             }).join('');
-            DOM.scheduleContainer.innerHTML = Array.from({ length: 16 }, (_, i) => i + 6).map(hour => {
+            // --- CAMBIO AQUÍ: Horario de 00 a 23 horas ---
+            DOM.scheduleContainer.innerHTML = Array.from({ length: 24 }, (_, i) => i).map(hour => {
                 const eventsHTML = dayData.scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(event => `
                     <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-3 rounded-xl flex items-center justify-between border-2 border-purple-200 mb-2 shadow-md">
                         <div><div class="text-xs text-purple-600 font-semibold">${event.startTime} - ${event.endTime}</div><div class="text-sm">${event.text}</div></div>
@@ -218,8 +223,8 @@
                 const eventIndicator = eventCount > 0 ? `<span class="font-normal text-purple-500">(${eventCount})</span>` : '';
                 html += `<div class="font-questrial p-2 rounded-lg border-2 ${day.toDateString() === new Date().toDateString() ? 'bg-pink-300 text-white' : 'bg-pink-100'}">${DAY_NAMES[i]}<br>${day.getDate()} ${eventIndicator}</div>`;
             });
-            for (let hour = 6; hour < 22; hour++) {
-                html += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour}:00</div>`;
+            for (let hour = 0; hour < 24; hour++) {
+                html += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour.toString().padStart(2, '0')}:00</div>`;
                 weekDays.forEach(day => {
                     const eventsHTML = getDayData(day).scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(e => `<div class="text-xs bg-purple-200 p-1 rounded mb-1 truncate">${e.text}</div>`).join('');
                     html += `<div class="border border-pink-100 min-h-[40px] p-1">${eventsHTML}</div>`;
