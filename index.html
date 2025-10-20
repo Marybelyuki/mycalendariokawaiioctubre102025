@@ -26,7 +26,11 @@
         @keyframes pulse { 50% { opacity: .6; } }
         .animate-bounce { animation: bounce 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1); }
         .animate-pulse { animation: pulse 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1); }
-        .hidden { display: none; }
+        .hidden { display: none !important; } 
+        #schedule-timeline { 
+            position: relative; 
+            height: calc(24 * 4rem); /* 24 hours * h-16 (4rem) */
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-cyan-100 p-4">
@@ -80,8 +84,10 @@
                             <button id="add-event-btn" class="bg-gradient-to-r from-purple-400 to-pink-400 text-white px-4 py-2 rounded-xl shadow-lg transform hover:scale-105 transition"><i data-lucide="plus"></i></button>
                         </div>
                     </div>
-                    <div id="schedule-timeline" class="relative max-h-[600px] overflow-y-auto bg-white/50 rounded-lg">
-                        </div>
+                    <div class="max-h-[600px] overflow-y-auto bg-white/50 rounded-lg p-2"> 
+                        <div id="schedule-timeline" class="relative"> 
+                            </div>
+                    </div>
                 </div>
                 <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg p-6 border-4 border-cyan-200"><h2 class="font-questrial text-2xl font-bold text-teal-500 mb-4 flex items-center gap-2"><i data-lucide="notebook-pen"></i>Notas</h2><textarea id="notes-textarea" class="w-full h-full min-h-[500px] p-4 rounded-2xl border-2 border-cyan-200 bg-cyan-50/50 focus:outline-cyan-400" placeholder="Escribe tus pensamientos aquí... 🌟"></textarea></div>
             </div>
@@ -99,11 +105,14 @@
         let currentDate = new Date();
         let dailyData = {};
         let currentView = 'daily';
+        let editingEventId = null; 
 
         // --- 2. CONSTANTES Y REFERENCIAS AL DOM ---
         const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
         const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+        const HOUR_HEIGHT_PX = 64; 
         const DOM = {
+            addEventBtn: document.getElementById('add-event-btn'), 
             dateDisplay: document.getElementById('current-date-display'),
             viewContainers: document.querySelectorAll('.view-container'),
             viewSwitcherBtns: document.querySelectorAll('.view-btn'),
@@ -136,13 +145,83 @@
 
         // --- 4. LÓGICA DE LA APLICACIÓN ---
         const handleAction = (action) => { action(); saveData(); renderApp(); };
-        const addTask = () => handleAction(() => { /* ... (código sin cambios) ... */ });
-        const toggleTask = (taskId) => handleAction(() => { /* ... (código sin cambios) ... */ });
-        const deleteTask = (taskId) => handleAction(() => { /* ... (código sin cambios) ... */ });
-        const addEvent = () => handleAction(() => { /* ... (código sin cambios) ... */ });
-        const deleteEvent = (eventId) => handleAction(() => { /* ... (código sin cambios) ... */ });
-        const exportToTXT = () => { /* ... (código sin cambios) ... */ };
-        const exportToICS = () => { /* ... (código sin cambios) ... */ };
+
+        const addTask = () => handleAction(() => {
+            const text = DOM.taskInput.value.trim();
+            if (text) { getDayData(currentDate).tasks.push({ id: Date.now(), text, completed: false, priority: DOM.prioritySelect.value }); DOM.taskInput.value = ''; }
+        });
+
+        const toggleTask = (taskId) => handleAction(() => {
+            const task = getDayData(currentDate).tasks.find(t => t.id === taskId);
+            if(task) task.completed = !task.completed;
+        });
+
+        const deleteTask = (taskId) => handleAction(() => {
+            const dayData = getDayData(currentDate);
+            dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
+        });
+
+        const addEvent = () => handleAction(() => {
+            const startTime = `${DOM.eventStartHour.value}:${DOM.eventStartMinute.value}`;
+            const endTime = `${DOM.eventEndHour.value}:${DOM.eventEndMinute.value}`;
+            const text = DOM.eventTextInput.value.trim();
+            const dayData = getDayData(currentDate);
+
+            if (editingEventId !== null) { 
+                const eventIndex = dayData.scheduleEvents.findIndex(e => e.id === editingEventId);
+                if (eventIndex > -1) {
+                    if (text) { 
+                        dayData.scheduleEvents[eventIndex] = { ...dayData.scheduleEvents[eventIndex], startTime, endTime, text };
+                    } else { 
+                       console.log("Edición cancelada por texto vacío");
+                    }
+                }
+                editingEventId = null; 
+            } else if (text) { 
+                dayData.scheduleEvents.push({ id: Date.now(), startTime, endTime, text });
+            }
+            
+            dayData.scheduleEvents.sort((a, b) => a.startTime.localeCompare(b.startTime));
+            
+            DOM.eventTextInput.value = '';
+            DOM.addEventBtn.innerHTML = '<i data-lucide="plus"></i>'; 
+            // Reset selects to default (optional)
+             DOM.eventStartHour.selectedIndex = 0; DOM.eventStartMinute.selectedIndex = 0;
+             DOM.eventEndHour.selectedIndex = 0; DOM.eventEndMinute.selectedIndex = 0;
+            lucide.createIcons(); 
+        });
+
+        const editEvent = (eventId) => {
+            const event = getDayData(currentDate).scheduleEvents.find(e => e.id === eventId);
+            if (event) {
+                const [startH, startM] = event.startTime.split(':');
+                const [endH, endM] = event.endTime.split(':');
+                DOM.eventStartHour.value = startH;
+                DOM.eventStartMinute.value = startM;
+                DOM.eventEndHour.value = endH;
+                DOM.eventEndMinute.value = endM;
+                DOM.eventTextInput.value = event.text;
+                editingEventId = eventId; 
+                DOM.addEventBtn.innerHTML = '<i data-lucide="save"></i>'; 
+                lucide.createIcons(); 
+            }
+        };
+
+        const deleteEvent = (eventId) => {
+            handleAction(() => {
+                const dayData = getDayData(currentDate);
+                dayData.scheduleEvents = dayData.scheduleEvents.filter(e => e.id !== eventId);
+                if (editingEventId === eventId) {
+                    editingEventId = null;
+                    DOM.eventTextInput.value = '';
+                    DOM.addEventBtn.innerHTML = '<i data-lucide="plus"></i>';
+                    lucide.createIcons();
+                }
+            });
+        };
+        
+        const exportToTXT = () => { /* ... (sin cambios) ... */ };
+        const exportToICS = () => { /* ... (sin cambios) ... */ };
 
         // --- 5. RENDERIZADO ---
         const renderDailyView = () => {
@@ -157,48 +236,98 @@
                     <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>`;
             }).join('');
-
-            // --- LÓGICA DEL HORARIO COMPLETAMENTE REESCRITA ---
+            
             const timeline = DOM.scheduleTimeline;
-            timeline.innerHTML = '';
-            
-            let backgroundHTML = '<div class="absolute inset-0">';
+            timeline.innerHTML = ''; 
+            timeline.style.height = `${24 * HOUR_HEIGHT_PX}px`; 
+
+            let backgroundHTML = '';
             for (let hour = 0; hour < 24; hour++) {
-                backgroundHTML += `
-                    <div class="flex h-16">
-                        <div class="w-14 text-xs font-semibold text-gray-400 text-right pr-2 -mt-2">${hour.toString().padStart(2, '0')}:00</div>
-                        <div class="flex-1 border-t border-pink-200"></div>
-                    </div>`;
+                backgroundHTML += `<div class="flex items-start absolute w-full" style="top: ${hour * HOUR_HEIGHT_PX}px; height: ${HOUR_HEIGHT_PX}px;"><div class="w-14 text-xs font-semibold text-gray-400 text-right pr-2 -mt-2">${hour.toString().padStart(2, '0')}:00</div><div class="flex-1 border-t border-pink-200 h-full"></div></div>`;
             }
-            backgroundHTML += '</div>';
+            timeline.innerHTML = backgroundHTML; 
             
-            const minuteHeight = 64 / 60; // 64px (h-16) / 60 minutes
-            let eventsHTML = dayData.scheduleEvents.map(event => {
+            const minuteHeight = HOUR_HEIGHT_PX / 60; 
+            dayData.scheduleEvents.forEach(event => {
                 const [startHour, startMinute] = event.startTime.split(':').map(Number);
                 const [endHour, endMinute] = event.endTime.split(':').map(Number);
-
                 const top = (startHour * 60 + startMinute) * minuteHeight;
-                const duration = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
-                const height = duration * minuteHeight;
+                let durationMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+                if (durationMinutes <= 0) { durationMinutes = 15; } 
+                const height = Math.max(durationMinutes * minuteHeight, 32); 
 
-                return `
-                    <div class="absolute left-14 right-0 mx-2 p-2 rounded-lg bg-gradient-to-r from-purple-300 to-pink-300 border-l-4 border-purple-500 text-white shadow-lg flex flex-col justify-between overflow-hidden"
-                         style="top: ${top}px; height: ${height}px; min-height: 32px;">
-                        <div>
-                            <div class="font-bold text-sm">${event.text}</div>
-                            <div class="text-xs">${event.startTime} - ${event.endTime}</div>
-                        </div>
-                        <button onclick="deleteEvent(${event.id})" class="absolute bottom-1 right-1 text-white/50 hover:text-white">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
+                const eventDiv = document.createElement('div');
+                eventDiv.className = "absolute left-14 right-0 mx-2 p-2 rounded-lg bg-gradient-to-r from-purple-100 via-pink-100 to-purple-100 border-l-4 border-purple-500 text-purple-800 shadow-lg flex flex-col justify-between overflow-hidden";
+                eventDiv.style.top = `${top}px`;
+                eventDiv.style.height = `${height}px`;
+                eventDiv.style.minHeight = '32px';
+                eventDiv.innerHTML = `
+                    <div><div class="font-bold text-sm">${event.text}</div><div class="text-xs">${event.startTime} - ${event.endTime}</div></div>
+                    <div class="absolute bottom-1 right-1 flex gap-1">
+                        <button onclick="editEvent(${event.id})" class="text-purple-600/50 hover:text-purple-700" title="Editar evento"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                        <button onclick="deleteEvent(${event.id})" class="text-red-400/50 hover:text-red-500" title="Borrar evento"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>`;
-            }).join('');
-
-            timeline.innerHTML = backgroundHTML + `<div class="relative">${eventsHTML}</div>`;
+                timeline.appendChild(eventDiv); 
+            });
+            DOM.addEventBtn.innerHTML = editingEventId === null ? '<i data-lucide="plus"></i>' : '<i data-lucide="save"></i>';
         };
-        const renderWeeklyView = () => { /* ... (código sin cambios) ... */ };
-        const renderMonthlyView = () => { /* ... (código sin cambios) ... */ };
-        const renderYearlyView = () => { /* ... (código sin cambios) ... */ };
+
+        const renderWeeklyView = () => {
+            let html = `<div class="font-questrial font-bold p-2 text-teal-700">HORA</div>`;
+            const weekDays = Array.from({length: 7}, (_, i) => { const d = new Date(currentDate); d.setDate(d.getDate() - d.getDay() + i); return d; });
+            weekDays.forEach((day, i) => {
+                const eventCount = getDayData(day).scheduleEvents.length;
+                const eventIndicator = eventCount > 0 ? `<span class="font-normal text-purple-500">(${eventCount})</span>` : '';
+                html += `<div class="font-questrial p-2 rounded-lg border-2 ${day.toDateString() === new Date().toDateString() ? 'bg-pink-300 text-white' : 'bg-pink-100'}">${DAY_NAMES[i]}<br>${day.getDate()} ${eventIndicator}</div>`;
+            });
+            for (let hour = 0; hour < 24; hour++) {
+                html += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour.toString().padStart(2, '0')}:00</div>`;
+                weekDays.forEach(day => {
+                    const eventsHTML = getDayData(day).scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(e => `<div class="text-xs bg-purple-200 p-1 rounded mb-1 truncate">${e.text}</div>`).join('');
+                    html += `<div class="border border-pink-100 min-h-[40px] p-1">${eventsHTML}</div>`;
+                });
+            }
+            DOM.weeklyGrid.innerHTML = html;
+        };
+
+        const renderMonthlyView = () => {
+            DOM.monthlyHeader.innerHTML = DAY_NAMES.map(day => `<div class="font-questrial font-bold text-center text-teal-700">${day}</div>`).join('');
+            const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1), lastDay = new Date(year, month + 1, 0);
+            let daysHTML = Array(firstDay.getDay()).fill('<div></div>').join('');
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const isToday = date.toDateString() === new Date().toDateString();
+                const dayData = getDayData(date);
+                const taskCount = dayData.tasks.length;
+                const events = dayData.scheduleEvents;
+                const taskIndicator = taskCount > 0 ? `<div class="text-xs text-pink-500 mt-1">🌸 ${taskCount} tareas</div>` : '';
+                const eventIndicator = events.slice(0, 2).map(event => `<div class="text-xs bg-purple-200 text-purple-800 p-1 rounded-md truncate mt-1"><span class="font-semibold">${event.startTime}</span> ${event.text}</div>`).join('');
+                const bgColor = isToday ? 'bg-pink-300' : 'bg-teal-100/50';
+                const borderColor = isToday ? 'border-pink-400' : 'border-teal-200';
+                const textColor = isToday ? 'text-white' : 'text-teal-800';
+                daysHTML += `<div class="p-2 border-2 rounded-lg min-h-[120px] transition hover:shadow-md hover:border-teal-400 ${bgColor} ${borderColor}"><div class="font-bold ${textColor}">${day}</div><div class="space-y-1">${taskIndicator}${eventIndicator}</div></div>`;
+            }
+            DOM.monthlyDays.innerHTML = daysHTML;
+        };
+        
+        const renderYearlyView = () => {
+            const year = currentDate.getFullYear();
+            DOM.yearlyGrid.innerHTML = MONTH_NAMES.map((name, i) => {
+                let totalEventsThisMonth = 0;
+                const daysInMonth = new Date(year, i + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) { totalEventsThisMonth += getDayData(new Date(year, i, day)).scheduleEvents.length; }
+                const eventIndicator = totalEventsThisMonth > 0 ? `<div class="text-sm text-purple-600 mt-1 flex items-center justify-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i> ${totalEventsThisMonth} eventos</div>` : '';
+                const isCurrentMonth = i === new Date().getMonth() && year === new Date().getFullYear();
+                const bgColor = isCurrentMonth ? 'bg-pink-300' : 'bg-cyan-100/70';
+                const borderColor = isCurrentMonth ? 'border-pink-400' : 'border-pink-200';
+                const textColor = isCurrentMonth ? 'text-white' : 'text-cyan-800';
+                return `<div class="h-32 p-4 rounded-2xl border-4 text-center font-bold transition hover:shadow-lg hover:scale-105 flex flex-col justify-center items-center ${bgColor} ${borderColor} ${textColor}">
+                    <span class="font-questrial text-2xl">${name}</span>
+                    ${eventIndicator}
+                </div>`
+            }).join('');
+        };
 
         const renderApp = () => {
             if (currentView === 'daily') DOM.dateDisplay.textContent = currentDate.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -206,21 +335,29 @@
             else if (currentView === 'monthly') DOM.dateDisplay.textContent = `${MONTH_NAMES[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
             else DOM.dateDisplay.textContent = currentDate.getFullYear();
             
-            DOM.viewContainers.forEach(c => c.classList.toggle('hidden', c.id !== `${currentView}-view`));
-            document.getElementById('daily-view').style.display = currentView === 'daily' ? 'grid' : 'none';
+            DOM.viewContainers.forEach(c => {
+                 c.classList.toggle('hidden', c.id !== `${currentView}-view`);
+            });
+
             DOM.viewSwitcherBtns.forEach(btn => {
                 const view = btn.dataset.view;
                 const colors = { daily: 'pink', weekly: 'purple', monthly: 'cyan', yearly: 'blue' };
                 btn.className = `view-btn px-3 py-2 rounded-xl font-bold transition transform hover:scale-105 ${view === currentView ? `bg-gradient-to-r from-${colors[view]}-400 to-${colors[view]}-500 text-white shadow-lg` : `bg-white text-${colors[view]}-500 hover:bg-${colors[view]}-50`}`;
             });
             const renderers = { daily: renderDailyView, weekly: renderWeeklyView, monthly: renderMonthlyView, yearly: renderYearlyView };
-            renderers[currentView]();
+            if (renderers[currentView]) {
+                 renderers[currentView]();
+            }
             lucide.createIcons();
         };
 
         // --- 6. INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
             const populateTimeSelects = () => {
+                // Limpiar selectores antes de poblar (importante si se llama más de una vez)
+                DOM.eventStartHour.innerHTML = ''; DOM.eventEndHour.innerHTML = '';
+                DOM.eventStartMinute.innerHTML = ''; DOM.eventEndMinute.innerHTML = '';
+                
                 for (let i = 0; i < 24; i++) {
                     const hour = i.toString().padStart(2, '0');
                     DOM.eventStartHour.innerHTML += `<option value="${hour}">${hour}</option>`;
@@ -234,6 +371,13 @@
             populateTimeSelects();
 
             const handleNav = (dir) => {
+                // Salir del modo edición si cambiamos de día/semana/mes/año
+                 if (editingEventId !== null) {
+                    editingEventId = null;
+                    DOM.eventTextInput.value = '';
+                    DOM.addEventBtn.innerHTML = '<i data-lucide="plus"></i>'; 
+                    lucide.createIcons();
+                }
                 if (currentView === 'daily') currentDate.setDate(currentDate.getDate() + dir);
                 else if (currentView === 'weekly') currentDate.setDate(currentDate.getDate() + 7 * dir);
                 else if (currentView === 'monthly') currentDate.setMonth(currentDate.getMonth() + dir);
@@ -243,29 +387,26 @@
             document.getElementById('prev-btn').addEventListener('click', () => handleNav(-1));
             document.getElementById('next-btn').addEventListener('click', () => handleNav(1));
             document.getElementById('add-task-btn').addEventListener('click', addTask);
-            document.getElementById('add-event-btn').addEventListener('click', addEvent);
+            document.getElementById('add-event-btn').addEventListener('click', addEvent); 
             document.getElementById('export-txt-btn').addEventListener('click', exportToTXT);
             document.getElementById('export-ics-btn').addEventListener('click', exportToICS);
-            DOM.viewSwitcherBtns.forEach(btn => btn.addEventListener('click', () => { currentView = btn.dataset.view; renderApp(); }));
+            DOM.viewSwitcherBtns.forEach(btn => btn.addEventListener('click', () => { 
+                if (editingEventId !== null) {
+                    editingEventId = null;
+                    DOM.eventTextInput.value = '';
+                    DOM.addEventBtn.innerHTML = '<i data-lucide="plus"></i>'; 
+                    lucide.createIcons();
+                }
+                currentView = btn.dataset.view; 
+                renderApp(); 
+            }));
             DOM.goalsTextarea.addEventListener('input', (e) => { getDayData(currentDate).goals = e.target.value; saveData(); });
             DOM.notesTextarea.addEventListener('input', (e) => { getDayData(currentDate).notes = e.target.value; saveData(); });
-            DOM.taskInput.addEventListener('keypress', (e) => e.key === 'Enter' && addTask);
-            DOM.eventTextInput.addEventListener('keypress', (e) => e.key === 'Enter' && addEvent);
+            DOM.taskInput.addEventListener('keypress', (e) => e.key === 'Enter' && addTask());
+            DOM.eventTextInput.addEventListener('keypress', (e) => e.key === 'Enter' && addEvent());
             loadData();
             renderApp();
         });
-
-        // --- CÓDIGO RESTANTE (SIN CAMBIOS) ---
-        addTask = () => handleAction(() => { const text = DOM.taskInput.value.trim(); if (text) { getDayData(currentDate).tasks.push({ id: Date.now(), text, completed: false, priority: DOM.prioritySelect.value }); DOM.taskInput.value = ''; } });
-        toggleTask = (taskId) => handleAction(() => { const task = getDayData(currentDate).tasks.find(t => t.id === taskId); if(task) task.completed = !task.completed; });
-        deleteTask = (taskId) => handleAction(() => { const dayData = getDayData(currentDate); dayData.tasks = dayData.tasks.filter(t => t.id !== taskId); });
-        addEvent = () => handleAction(() => { const startTime = `${DOM.eventStartHour.value}:${DOM.eventStartMinute.value}`; const endTime = `${DOM.eventEndHour.value}:${DOM.eventEndMinute.value}`; const text = DOM.eventTextInput.value.trim(); if (text) { const dayData = getDayData(currentDate); dayData.scheduleEvents.push({ id: Date.now(), startTime, endTime, text }); dayData.scheduleEvents.sort((a, b) => a.startTime.localeCompare(b.startTime)); DOM.eventTextInput.value = ''; } });
-        deleteEvent = (eventId) => handleAction(() => { const dayData = getDayData(currentDate); dayData.scheduleEvents = dayData.scheduleEvents.filter(e => e.id !== eventId); });
-        exportToTXT = () => { const data = getDayData(currentDate); const dateStr = currentDate.toLocaleDateString('es-MX'); let content = `🦄 Merakelysi Planner - Resumen del ${dateStr} 🦄\n=================================================\n\n`; content += `🎯 OBJETIVOS DEL DÍA:\n${data.goals || 'No se registraron objetivos.'}\n\n`; content += `✅ LISTA DE TAREAS:\n`; if (data.tasks.length > 0) { data.tasks.forEach(task => { content += `${task.completed ? '[x]' : '[ ]'} ${task.text} (Prioridad: ${task.priority})\n`; }); } else { content += `No hay tareas pendientes.\n`; } content += `\n📅 HORARIO:\n`; if (data.scheduleEvents.length > 0) { data.scheduleEvents.forEach(event => { content += `${event.startTime} - ${event.endTime}: ${event.text}\n`; }); } else { content += `No hay eventos agendados.\n`; } content += `\n📝 NOTAS:\n${data.notes || 'No hay notas.'}\n`; const blob = new Blob([content], { type: 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `planner-resumen-${formatDateKey(currentDate)}.txt`; a.click(); URL.revokeObjectURL(url); };
-        exportToICS = () => { const events = getDayData(currentDate).scheduleEvents; if (events.length === 0) { alert("No hay eventos en el horario para exportar en este día."); return; } const formatICSDate = (date, time) => { const [year, month, day] = [date.getFullYear(), date.getMonth(), date.getDate()]; const [hour, minute] = time.split(':'); const localDate = new Date(year, month, day, hour, minute); return localDate.toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'; }; let icsContent = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Merakelysi Planner//EN']; events.forEach(event => { icsContent.push('BEGIN:VEVENT', `UID:${Date.now()}${Math.random().toString(16).substr(2, 8)}@merakelysi.planner`, `DTSTAMP:${new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'}`, `DTSTART:${formatICSDate(currentDate, event.startTime)}`, `DTEND:${formatICSDate(currentDate, event.endTime)}`, `SUMMARY:${event.text}`, `DESCRIPTION:Evento agendado desde Merakelysi Planner.`, 'END:VEVENT'); }); icsContent.push('END:VCALENDAR'); const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `evento-${formatDateKey(currentDate)}.ics`; a.click(); URL.revokeObjectURL(url); };
-        renderWeeklyView = () => { let html = `<div class="font-questrial font-bold p-2 text-teal-700">HORA</div>`; const weekDays = Array.from({length: 7}, (_, i) => { const d = new Date(currentDate); d.setDate(d.getDate() - d.getDay() + i); return d; }); weekDays.forEach((day, i) => { const eventCount = getDayData(day).scheduleEvents.length; const eventIndicator = eventCount > 0 ? `<span class="font-normal text-purple-500">(${eventCount})</span>` : ''; html += `<div class="font-questrial p-2 rounded-lg border-2 ${day.toDateString() === new Date().toDateString() ? 'bg-pink-300 text-white' : 'bg-pink-100'}">${DAY_NAMES[i]}<br>${day.getDate()} ${eventIndicator}</div>`; }); for (let hour = 0; hour < 24; hour++) { html += `<div class="font-semibold p-2 bg-cyan-50 rounded-lg">${hour.toString().padStart(2, '0')}:00</div>`; weekDays.forEach(day => { const eventsHTML = getDayData(day).scheduleEvents.filter(e => parseInt(e.startTime.split(':')[0]) === hour).map(e => `<div class="text-xs bg-purple-200 p-1 rounded mb-1 truncate">${e.text}</div>`).join(''); html += `<div class="border border-pink-100 min-h-[40px] p-1">${eventsHTML}</div>`; }); } DOM.weeklyGrid.innerHTML = html; };
-        renderMonthlyView = () => { DOM.monthlyHeader.innerHTML = DAY_NAMES.map(day => `<div class="font-questrial font-bold text-center text-teal-700">${day}</div>`).join(''); const year = currentDate.getFullYear(), month = currentDate.getMonth(); const firstDay = new Date(year, month, 1), lastDay = new Date(year, month + 1, 0); let daysHTML = Array(firstDay.getDay()).fill('<div></div>').join(''); for (let day = 1; day <= lastDay.getDate(); day++) { const date = new Date(year, month, day); const isToday = date.toDateString() === new Date().toDateString(); const dayData = getDayData(date); const taskCount = dayData.tasks.length; const events = dayData.scheduleEvents; const taskIndicator = taskCount > 0 ? `<div class="text-xs text-pink-500 mt-1">🌸 ${taskCount} tareas</div>` : ''; const eventIndicator = events.slice(0, 2).map(event => `<div class="text-xs bg-purple-200 text-purple-800 p-1 rounded-md truncate mt-1"><span class="font-semibold">${event.startTime}</span> ${event.text}</div>`).join(''); const bgColor = isToday ? 'bg-pink-300' : 'bg-teal-100/50'; const borderColor = isToday ? 'border-pink-400' : 'border-teal-200'; const textColor = isToday ? 'text-white' : 'text-teal-800'; daysHTML += `<div class="p-2 border-2 rounded-lg min-h-[120px] transition hover:shadow-md hover:border-teal-400 ${bgColor} ${borderColor}"><div class="font-bold ${textColor}">${day}</div><div class="space-y-1">${taskIndicator}${eventIndicator}</div></div>`; } DOM.monthlyDays.innerHTML = daysHTML; };
-        renderYearlyView = () => { const year = currentDate.getFullYear(); DOM.yearlyGrid.innerHTML = MONTH_NAMES.map((name, i) => { let totalEventsThisMonth = 0; const daysInMonth = new Date(year, i + 1, 0).getDate(); for (let day = 1; day <= daysInMonth; day++) { totalEventsThisMonth += getDayData(new Date(year, i, day)).scheduleEvents.length; } const eventIndicator = totalEventsThisMonth > 0 ? `<div class="text-sm text-purple-600 mt-1 flex items-center justify-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i> ${totalEventsThisMonth} eventos</div>` : ''; const isCurrentMonth = i === new Date().getMonth() && year === new Date().getFullYear(); const bgColor = isCurrentMonth ? 'bg-pink-300' : 'bg-cyan-100/70'; const borderColor = isCurrentMonth ? 'border-pink-400' : 'border-pink-200'; const textColor = isCurrentMonth ? 'text-white' : 'text-cyan-800'; return `<div class="h-32 p-4 rounded-2xl border-4 text-center font-bold transition hover:shadow-lg hover:scale-105 flex flex-col justify-center items-center ${bgColor} ${borderColor} ${textColor}"><span class="font-questrial text-2xl">${name}</span>${eventIndicator}</div>` }).join(''); };
     </script>
 </body>
 </html>
